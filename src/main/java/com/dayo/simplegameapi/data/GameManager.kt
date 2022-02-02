@@ -1,7 +1,7 @@
-package com.dayo.simplegamelauncher.data
+package com.dayo.simplegameapi.data
 
-import com.dayo.simplegamelauncher.SimpleGameLauncher
-import com.dayo.simplegamelauncher.api.Game
+import com.dayo.simplegameapi.SimpleGameApi
+import com.dayo.simplegameapi.api.Game
 import kotlinx.coroutines.*
 import org.bukkit.entity.Player
 import java.util.*
@@ -21,7 +21,7 @@ class GameManager {
             if(roomStatus[room]!!.size == gameList[room.gid]!!.minimumPlayer) {
                 CoroutineScope(Dispatchers.Default).launch {
                     for(t in 0 until 10) {
-                        SimpleGameLauncher.getPlayer(uid).sendMessage("${10 - t}초 후 시작합니다!")
+                        SimpleGameApi.getPlayer(uid).sendMessage("${10 - t}초 후 시작합니다!")
                         delay(1000)
                         if(roomStatus[room]!!.size < gameList[room.gid]!!.minimumPlayer)
                             return@launch

@@ -1,6 +1,6 @@
-package com.dayo.simplegamelauncher.event
+package com.dayo.simplegameapi.event
 
-import com.dayo.simplegamelauncher.data.RoomInfo
+import com.dayo.simplegameapi.data.RoomInfo
 import org.bukkit.Bukkit
 import org.bukkit.event.HandlerList
 import org.bukkit.event.player.PlayerEvent

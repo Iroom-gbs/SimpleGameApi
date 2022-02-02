@@ -1,9 +1,9 @@
-package com.dayo.simplegamelauncher.api
+package com.dayo.simplegameapi.api
 
-import com.dayo.simplegamelauncher.data.GameManager
-import com.dayo.simplegamelauncher.data.RoomInfo
-import com.dayo.simplegamelauncher.event.GameFinishEvent
-import com.dayo.simplegamelauncher.event.PlayerFailEvent
+import com.dayo.simplegameapi.data.GameManager
+import com.dayo.simplegameapi.data.RoomInfo
+import com.dayo.simplegameapi.event.GameFinishEvent
+import com.dayo.simplegameapi.event.PlayerFailEvent
 import org.bukkit.Bukkit
 import java.util.*
 
