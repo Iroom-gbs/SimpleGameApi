@@ -18,7 +18,7 @@ class GameManager {
             }
             playerStatus[uid] = room
             roomStatus[room]!!.add(uid)
-            if(roomStatus[room]!!.size >= gameList[room.gid]!!.minimumPlayer) {
+            if(roomStatus[room]!!.size == gameList[room.gid]!!.minimumPlayer) {
                 GlobalScope.launch(Dispatchers.Main) {
                     for(t in 0 until 10) {
                         SimpleGameLauncher.getPlayer(uid).sendMessage("${10 - t}초 후 시작합니다!")
@@ -28,7 +28,6 @@ class GameManager {
                     }
                     gameList[room.gid]?.onGameStart(room, roomStatus[room]!!)
                 }
-                //request start game
             }
             return true
         }
@@ -69,5 +68,9 @@ class GameManager {
         public fun addListener(l: GameEventListener) {
             listener.add(l)
         }
+
+        public fun onPlayerFailed(p: UUID, room: RoomInfo) = listener.forEach{it.onPlayerFailed(p, room)}
+
+        public fun onGameFinished(room: RoomInfo) = listener.forEach{it.onGameFinished(room)}
     }
 }

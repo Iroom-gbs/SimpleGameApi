@@ -9,11 +9,11 @@ abstract class Game {
     abstract val minimumPlayer: Int
     fun onPlayerFailed(room: RoomInfo, player: UUID) {
         GameManager.leftPlayer(player)
-        GameManager.listener.forEach { it.onPlayerFailed(player, room) }
+        GameManager.onPlayerFailed(player, room)
     }
 
     fun finish(room: RoomInfo) {
         GameManager.resetRoom(room)
-        GameManager.listener.forEach { it.onGameFinished(room) }
+        GameManager.onGameFinished(room)
     }
 }
