@@ -15,6 +15,8 @@ abstract class Game {
     open fun onPlayerFailed(room: RoomInfo, player: UUID) {
         GameManager.leftPlayer(player)
         Bukkit.getPluginManager().callEvent(PlayerFailEvent(player, room))
+        if(GameManager.getLeftPlayer(room) == 0)
+            finish(room)
     }
 
     open fun finish(room: RoomInfo) {

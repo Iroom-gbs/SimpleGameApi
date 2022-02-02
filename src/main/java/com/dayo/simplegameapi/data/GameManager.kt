@@ -54,6 +54,8 @@ class GameManager {
 
         public fun getRoomStatus(room: RoomInfo): Status = roomStatus[room]!!.status
 
+        public fun getLeftPlayer(room: RoomInfo): Int = roomStatus[room]!!.players.size
+
         /*
         public fun registerGame(game: Game) {
             if(gameList.containsKey(game.id))
