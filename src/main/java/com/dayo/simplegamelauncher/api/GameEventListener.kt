@@ -1,5 +1,6 @@
-package com.dayo.simplegamelauncher.data
+package com.dayo.simplegamelauncher.api
 
+import com.dayo.simplegamelauncher.data.RoomInfo
 import java.util.*
 
 interface GameEventListener {

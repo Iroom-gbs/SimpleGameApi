@@ -1,5 +1,7 @@
-package com.dayo.simplegamelauncher.data
+package com.dayo.simplegamelauncher.api
 
+import com.dayo.simplegamelauncher.data.GameManager
+import com.dayo.simplegamelauncher.data.RoomInfo
 import java.util.*
 
 abstract class Game {
