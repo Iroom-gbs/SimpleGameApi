@@ -1,0 +1,9 @@
+name: SimpleGameLauncher
+version: '${version}'
+main: com.dayo.simplegamelauncher.SimpleGameLauncher
+api-version: 1.16
+prefix: SGL
+depend: [ Kotlin ]
+authors: [ dayo ]
+description: Simple game launcher
+website: https://github.com/iroom-gbs
