@@ -2,14 +2,12 @@ package com.dayo.simplegamelauncher.data
 
 import com.dayo.simplegamelauncher.SimpleGameLauncher
 import com.dayo.simplegamelauncher.api.Game
-import com.dayo.simplegamelauncher.api.GameEventListener
 import kotlinx.coroutines.*
 import org.bukkit.entity.Player
 import java.util.*
 
 class GameManager {
     companion object {
-        val listener = emptyList<GameEventListener>().toMutableList()
         val gameList = emptyMap<Int, Game>().toMutableMap()
         val playerStatus = emptyMap<UUID, RoomInfo?>().toMutableMap()
         val roomStatus = emptyMap<RoomInfo, MutableList<UUID>>().toMutableMap()
@@ -66,13 +64,5 @@ class GameManager {
         }
 
         public fun getGameById(game: Int): Game = gameList[game]!!
-
-        public fun addListener(l: GameEventListener) {
-            listener.add(l)
-        }
-
-        public fun onPlayerFailed(p: UUID, room: RoomInfo) = listener.forEach{it.onPlayerFailed(p, room)}
-
-        public fun onGameFinished(room: RoomInfo) = listener.forEach{it.onGameFinished(room)}
     }
 }
