@@ -19,7 +19,7 @@ class GameManager {
             playerStatus[uid] = room
             roomStatus[room]!!.add(uid)
             if(roomStatus[room]!!.size == gameList[room.gid]!!.minimumPlayer) {
-                GlobalScope.launch(Dispatchers.Main) {
+                CoroutineScope(Dispatchers.Default).launch {
                     for(t in 0 until 10) {
                         SimpleGameLauncher.getPlayer(uid).sendMessage("${10 - t}초 후 시작합니다!")
                         delay(1000)
