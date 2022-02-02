@@ -8,25 +8,29 @@ import java.util.*
 
 class GameManager {
     companion object {
-        val gameList = emptyMap<Int, Game>().toMutableMap()
-        val playerStatus = emptyMap<UUID, RoomInfo?>().toMutableMap()
-        val roomStatus = emptyMap<RoomInfo, MutableList<UUID>>().toMutableMap()
+        private val gameList = emptyMap<Int, Game>().toMutableMap()
+        private val playerStatus = emptyMap<UUID, RoomInfo?>().toMutableMap()
+        private val roomStatus = emptyMap<RoomInfo, RoomStatus>().toMutableMap()
 
         public fun joinPlayer(uid: UUID, room: RoomInfo): Boolean {
             playerStatus[uid]?.let {
-                roomStatus[it]!!.remove(uid)
+                roomStatus[it]!!.players.remove(uid)
             }
             playerStatus[uid] = room
-            roomStatus[room]!!.add(uid)
-            if(roomStatus[room]!!.size == gameList[room.gid]!!.minimumPlayer) {
+            roomStatus[room]!!.players.add(uid)
+            if(roomStatus[room]!!.players.size == gameList[room.gid]!!.playerCount && roomStatus[room]!!.status == Status.Waiting) {
                 CoroutineScope(Dispatchers.Default).launch {
+                    roomStatus[room]!!.status = Status.Pending
                     for(t in 0 until 10) {
-                        SimpleGameApi.getPlayer(uid).sendMessage("${10 - t}초 후 시작합니다!")
+                        roomStatus[room]!!.players.forEach{SimpleGameApi.getPlayer(it).sendMessage("${10 - t}초 후 시작합니다!")}
                         delay(1000)
-                        if(roomStatus[room]!!.size < gameList[room.gid]!!.minimumPlayer)
+                        if(roomStatus[room]!!.players.size < gameList[room.gid]!!.playerCount) {
+                            roomStatus[room]!!.status = Status.Waiting
                             return@launch
+                        }
                     }
-                    gameList[room.gid]?.onGameStart(room, roomStatus[room]!!)
+                    roomStatus[room]!!.status = Status.Running
+                    gameList[room.gid]?.onGameStart(room, roomStatus[room]!!.players)
                 }
             }
             return true
@@ -34,18 +38,21 @@ class GameManager {
 
         public fun leftPlayer(uid: UUID) {
             playerStatus[uid]?.let {
-                roomStatus[it]!!.remove(uid)
+                roomStatus[it]!!.players.remove(uid)
             }
             playerStatus[uid] = null
         }
 
         public fun resetRoom(room: RoomInfo) {
-            while(roomStatus[room]!!.size > 0) leftPlayer(roomStatus[room]!![roomStatus[room]!!.size - 1])
+            while(roomStatus[room]!!.players.size > 0) leftPlayer(roomStatus[room]!!.players[roomStatus[room]!!.players.size - 1])
+            roomStatus[room]!!.status = Status.Waiting
         }
 
         public fun getPlaying(p: Player): RoomInfo? {
             return playerStatus[p.uniqueId]
         }
+
+        public fun getRoomStatus(room: RoomInfo): Status = roomStatus[room]!!.status
 
         /*
         public fun registerGame(game: Game) {
@@ -60,7 +67,7 @@ class GameManager {
                 throw IllegalArgumentException("Game id ${game.id} already exists")
             gameList[game.id] = game
             for(i in 0 until roomSize)
-                roomStatus[RoomInfo(game.id, i)] = emptyList<UUID>().toMutableList()
+                roomStatus[RoomInfo(game.id, i)] = RoomStatus(emptyList<UUID>().toMutableList(), Status.Waiting)
         }
 
         public fun getGameById(game: Int): Game = gameList[game]!!
