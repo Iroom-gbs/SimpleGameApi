@@ -5,7 +5,7 @@ import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
 
-class GameFinishEvent(roominfo: RoomInfo) : Event() {
+class GameFinishEvent(roomInfo: RoomInfo) : Event() {
     companion object
     {
         private val HANDLERS = HandlerList()
@@ -22,9 +22,9 @@ class GameFinishEvent(roominfo: RoomInfo) : Event() {
         return HANDLERS
     }
 
-    private var roominfo : RoomInfo = roominfo
+    private val roomInfo : RoomInfo
         get()
     {
-        return roominfo
+        return roomInfo
     }
 }
