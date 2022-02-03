@@ -2,6 +2,7 @@ package com.dayo.simplegameapi.data
 
 import com.dayo.simplegameapi.SimpleGameApi
 import com.dayo.simplegameapi.api.Game
+import com.dayo.simplegameapi.util.CoroutineUtil
 import kotlinx.coroutines.*
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -37,9 +38,9 @@ class GameManager {
                         }
                     }
                     roomStatus[room]!!.status = Status.Playing
-                    Bukkit.getScheduler().runTask(SimpleGameApi.instance, Runnable {
+                    CoroutineUtil.invokeMain {
                         gameList[room.gid].onGameStart(room, roomStatus[room]!!.players)
-                    })
+                    }
                 }
             }
             return true
