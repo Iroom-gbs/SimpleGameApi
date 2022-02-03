@@ -29,7 +29,7 @@ class GameManager {
                             return@launch
                         }
                     }
-                    roomStatus[room]!!.status = Status.Running
+                    roomStatus[room]!!.status = Status.Playing
                     gameList[room.gid]?.onGameStart(room, roomStatus[room]!!.players)
                 }
             }
