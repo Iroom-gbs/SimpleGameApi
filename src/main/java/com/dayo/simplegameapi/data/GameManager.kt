@@ -14,6 +14,10 @@ class GameManager {
         private val idList = emptyMap<String, Int>().toMutableMap()
 
         public fun joinPlayer(uid: UUID, room: RoomInfo): Boolean {
+            if(roomStatus[room]!!.players.size >= gameList[room.gid].maxPlayerCount) {
+                SimpleGameApi.getPlayer(uid).sendMessage("이미 최대 인원입니다.")
+                return false
+            }
             playerStatus[uid]?.let {
                 roomStatus[it]!!.players.remove(uid)
             }
