@@ -55,7 +55,7 @@ class GameManager {
 
         public fun getRoomStatus(room: RoomInfo): Status = roomStatus[room]!!.status
 
-        public fun getLeftPlayer(room: RoomInfo): Int = roomStatus[room]!!.players.size
+        public fun getCurrentPlayerCount(room: RoomInfo): Int = roomStatus[room]!!.players.size
 
         public fun getGameId(name: String): Int? = idList[name]
         public fun getGameId(game: Game): Int? = idList[game.name]
