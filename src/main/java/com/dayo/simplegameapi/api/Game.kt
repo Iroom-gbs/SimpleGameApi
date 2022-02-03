@@ -12,8 +12,7 @@ abstract class Game {
     abstract fun onGameStart(room: RoomInfo, players: List<UUID>)
     abstract val name: String
     abstract val playerCount: Int
-    open val maxPlayerCount: Int
-        get() = playerCount
+    abstract val maxPlayerCount: Int
 
     open fun playerFailed(room: RoomInfo, player: UUID) {
         GameManager.leftPlayer(player)
