@@ -11,7 +11,7 @@ abstract class Game {
     abstract fun onGameStart(room: RoomInfo, players: List<UUID>)
     abstract val name: String
     abstract val playerCount: Int
-    open fun onPlayerFailed(room: RoomInfo, player: UUID) {
+    open fun playerFailed(room: RoomInfo, player: UUID) {
         GameManager.leftPlayer(player)
         Bukkit.getPluginManager().callEvent(PlayerFailEvent(player, room))
         if(GameManager.getLeftPlayer(room) == 0)
