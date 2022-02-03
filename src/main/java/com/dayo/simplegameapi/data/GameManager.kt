@@ -8,9 +8,11 @@ import java.util.*
 
 class GameManager {
     companion object {
-        private val gameList = emptyMap<Int, Game>().toMutableMap()
+        //private val gameList = emptyMap<Int, Game>().toMutableMap()
+        private val gameList = emptyList<Game>().toMutableList()
         private val playerStatus = emptyMap<UUID, RoomInfo?>().toMutableMap()
         private val roomStatus = emptyMap<RoomInfo, RoomStatus>().toMutableMap()
+        private val idList = emptyMap<String, Int>().toMutableMap()
 
         public fun joinPlayer(uid: UUID, room: RoomInfo): Boolean {
             playerStatus[uid]?.let {
@@ -56,6 +58,9 @@ class GameManager {
 
         public fun getLeftPlayer(room: RoomInfo): Int = roomStatus[room]!!.players.size
 
+        public fun getGameId(name: String): Int? = idList[name]
+        public fun getGameId(game: Game): Int? = idList[game.name]
+
         /*
         public fun registerGame(game: Game) {
             if(gameList.containsKey(game.id))
@@ -65,11 +70,13 @@ class GameManager {
          */
 
         public fun registerGame(game: Game, roomSize: Int) {
-            if(gameList.containsKey(game.id))
-                throw IllegalArgumentException("Game id ${game.id} already exists")
-            gameList[game.id] = game
+            if(idList.containsKey(game.name))
+                throw IllegalArgumentException("Game ${game.name} already exists")
+            //gameList[game.id] = game
+            idList[game.name] = gameList.size
+            gameList.add(game)
             for(i in 0 until roomSize)
-                roomStatus[RoomInfo(game.id, i)] = RoomStatus(emptyList<UUID>().toMutableList(), Status.Waiting)
+                roomStatus[RoomInfo(idList[game.name]!!, i)] = RoomStatus(emptyList<UUID>().toMutableList(), Status.Waiting)
         }
 
         public fun getGameById(game: Int): Game = gameList[game]!!
