@@ -21,6 +21,10 @@ class GameManager {
                 SimpleGameApi.getPlayer(uid).sendMessage("이미 최대 인원입니다.")
                 return false
             }
+            if(getPlaying(uid)?.let { getRoomStatus(it) } == Status.Playing) {
+                SimpleGameApi.getPlayer(uid).sendMessage("이미 게임에 참가중입니다.")
+                return false
+            }
             playerStatus[uid]?.let {
                 roomStatus[it]!!.players.remove(uid)
             }
@@ -58,8 +62,8 @@ class GameManager {
             roomStatus[room]!!.status = Status.Waiting
         }
 
-        public fun getPlaying(p: Player): RoomInfo? {
-            return playerStatus[p.uniqueId]
+        public fun getPlaying(p: UUID): RoomInfo? {
+            return playerStatus[p]
         }
 
         public fun getRoomStatus(room: RoomInfo): Status = roomStatus[room]!!.status
