@@ -21,4 +21,8 @@ class PlayerFailEvent(public val uid: UUID, public val roomInfo: RoomInfo) : Pla
     override fun getHandlers(): HandlerList {
         return HANDLERS
     }
+
+    init {
+        println("$uid $roomInfo")
+    }
 }

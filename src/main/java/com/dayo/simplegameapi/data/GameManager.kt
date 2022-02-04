@@ -62,7 +62,6 @@ class GameManager {
 
         public fun makePlayerFailed(uid: UUID): Boolean {
             val room = getPlaying(uid)
-            println(room)
             if(room == null) {
                 return false
             }
