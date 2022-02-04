@@ -6,7 +6,7 @@ import org.bukkit.event.HandlerList
 import org.bukkit.event.player.PlayerEvent
 import java.util.*
 
-class PlayerFailEvent(uid: UUID, roomInfo: RoomInfo) : PlayerEvent(Bukkit.getPlayer(uid)!!) {
+class PlayerFailEvent(public val uid: UUID, public val roomInfo: RoomInfo) : PlayerEvent(Bukkit.getPlayer(uid)!!) {
     companion object
     {
         private val HANDLERS = HandlerList()
@@ -21,14 +21,4 @@ class PlayerFailEvent(uid: UUID, roomInfo: RoomInfo) : PlayerEvent(Bukkit.getPla
     override fun getHandlers(): HandlerList {
         return HANDLERS
     }
-
-    private val roomInfo : RoomInfo
-        get() {
-            return roomInfo
-        }
-
-    private val uuid : UUID
-        get() {
-            return uuid
-        }
 }
