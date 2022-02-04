@@ -2,6 +2,8 @@ package com.dayo.simplegameapi.data
 
 import com.dayo.simplegameapi.SimpleGameApi
 import com.dayo.simplegameapi.api.Game
+import com.dayo.simplegameapi.event.GameStartEvent
+import com.dayo.simplegameapi.event.PlayerFailEvent
 import com.dayo.simplegameapi.util.CoroutineUtil
 import kotlinx.coroutines.*
 import org.bukkit.Bukkit
@@ -43,6 +45,7 @@ class GameManager {
                     }
                     roomStatus[room]!!.status = Status.Playing
                     CoroutineUtil.invokeMain {
+                        Bukkit.getPluginManager().callEvent(GameStartEvent(room))
                         gameList[room.gid].onGameStart(room, roomStatus[room]!!.players)
                     }
                 }
