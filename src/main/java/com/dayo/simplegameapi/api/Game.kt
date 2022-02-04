@@ -16,6 +16,7 @@ abstract class Game {
 
     open fun playerFailed(room: RoomInfo, player: UUID) {
         GameManager.leftPlayer(player)
+        println("$room $player")
         CoroutineUtil.invokeMain {
             Bukkit.getPluginManager().callEvent(PlayerFailEvent(player, room))
             if (GameManager.getCurrentPlayerCount(room) == 0)

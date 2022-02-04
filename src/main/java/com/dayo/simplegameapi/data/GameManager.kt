@@ -5,7 +5,6 @@ import com.dayo.simplegameapi.api.Game
 import com.dayo.simplegameapi.event.GameStartEvent
 import com.dayo.simplegameapi.event.PlayerFailEvent
 import com.dayo.simplegameapi.util.CoroutineUtil
-import com.sun.org.apache.xpath.internal.operations.Bool
 import kotlinx.coroutines.*
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -63,6 +62,7 @@ class GameManager {
 
         public fun makePlayerFailed(uid: UUID): Boolean {
             val room = getPlaying(uid)
+            println(room)
             if(room == null) {
                 return false
             }
