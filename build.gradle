@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'me.ddayo'
-archivesBaseName = 'SimpleGameApi'
+archivesBaseName = 'simple-game-api'
 version = '1.0.0'
 
 repositories {
@@ -68,9 +68,9 @@ compileTestKotlin {
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId = 'me.ddayo'
-            artifactId = 'simplegameapi'
-            version = '1.0.0'
+            groupId = group
+            artifactId = archivesBaseName
+            version = version
             from components.java
             versionMapping {
                 usage('java-api') {

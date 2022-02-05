@@ -1,17 +1,16 @@
 package me.ddayo.simplegameapi.data
 
+import com.google.gson.Gson
 import me.ddayo.coroutine.Coroutine
 import me.ddayo.coroutine.functions.WaitSeconds
 import me.ddayo.simplegameapi.SimpleGameApi
 import me.ddayo.simplegameapi.api.Game
 import me.ddayo.simplegameapi.event.GameStartEvent
-import me.ddayo.simplegameapi.event.PlayerFailEvent
+import me.ddayo.simplegameapi.util.CloneUtil
 import me.ddayo.simplegameapi.util.CoroutineUtil
 import org.bukkit.Bukkit
-import org.bukkit.entity.Player
-import java.lang.Runnable
 import java.util.*
-import kotlin.reflect.KClass
+
 
 class GameManager {
     companion object {
@@ -88,14 +87,25 @@ class GameManager {
         public fun getGameId(game: Game): Int? = idList[game.name]
 
         public fun registerGame(game: Game, roomSize: Int) {
-
             if(idList.containsKey(game.name))
                 throw IllegalArgumentException("Game ${game.name} already exists")
             idList[game.name] = idList.size
             println("Game ${game.name} registered to id: ${idList[game.name]} with $roomSize rooms")
-            //gameList.add(game)
+            val cloned = CloneUtil.cloneMany(game, roomSize)
             for(i in 0 until roomSize) {
-                gameList[RoomInfo(idList[game.name]!!, i)] = game
+                gameList[RoomInfo(idList[game.name]!!, i)] = cloned[i]
+                roomStatus[RoomInfo(idList[game.name]!!, i)] = RoomStatus(emptyList<UUID>().toMutableList(), Status.Waiting)
+            }
+        }
+
+        public fun<T: Game> registerGame(game: Class<T>, vararg args: Any, roomSize: Int) {
+            if(idList.containsKey(game.name))
+                throw IllegalArgumentException("Game ${game.name} already exists")
+            idList[game.name] = idList.size
+            println("Game ${game.name} registered to id: ${idList[game.name]} with $roomSize rooms")
+
+            for(i in 0 until roomSize) {
+                gameList[RoomInfo(idList[game.name]!!, i)] = CloneUtil.createInstance(game, *args)
                 roomStatus[RoomInfo(idList[game.name]!!, i)] = RoomStatus(emptyList<UUID>().toMutableList(), Status.Waiting)
             }
         }
