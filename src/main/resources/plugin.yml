@@ -1,6 +1,6 @@
 name: SimpleGameApi
 version: '${version}'
-main: com.dayo.simplegameapi.SimpleGameApi
+main: me.ddayo.simplegameapi.SimpleGameApi
 api-version: 1.16
 prefix: SGL
 depend: [ Kotlin, Coroutine ]

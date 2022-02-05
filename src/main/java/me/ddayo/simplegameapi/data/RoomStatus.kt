@@ -1,4 +1,4 @@
-package com.dayo.simplegameapi.data
+package me.ddayo.simplegameapi.data
 
 import java.util.*
 

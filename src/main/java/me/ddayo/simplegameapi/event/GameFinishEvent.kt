@@ -1,10 +1,10 @@
-package com.dayo.simplegameapi.event
+package me.ddayo.simplegameapi.event
 
-import com.dayo.simplegameapi.data.RoomInfo
+import me.ddayo.simplegameapi.data.RoomInfo
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-class GameStartEvent(public val roomInfo: RoomInfo) : Event() {
+class GameFinishEvent(public val roomInfo: RoomInfo) : Event() {
     companion object
     {
         private val HANDLERS = HandlerList()
