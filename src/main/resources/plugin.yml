@@ -3,7 +3,7 @@ version: '${version}'
 main: com.dayo.simplegameapi.SimpleGameApi
 api-version: 1.16
 prefix: SGL
-depend: [ Kotlin ]
+depend: [ Kotlin, Coroutine ]
 authors: [ dayo ]
 description: Simple game launcher
 website: https://github.com/iroom-gbs

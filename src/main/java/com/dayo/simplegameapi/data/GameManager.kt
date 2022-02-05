@@ -1,5 +1,7 @@
 package com.dayo.simplegameapi.data
 
+import com.dayo.coroutine.Coroutine
+import com.dayo.coroutine.functions.WaitSeconds
 import com.dayo.simplegameapi.SimpleGameApi
 import com.dayo.simplegameapi.api.Game
 import com.dayo.simplegameapi.event.GameStartEvent
@@ -9,16 +11,17 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.lang.Runnable
 import java.util.*
+import kotlin.reflect.KClass
 
 class GameManager {
     companion object {
-        private val gameList = emptyList<Game>().toMutableList()
+        private val gameList = emptyMap<RoomInfo, Game>().toMutableMap()
         private val playerStatus = emptyMap<UUID, RoomInfo?>().toMutableMap()
         private val roomStatus = emptyMap<RoomInfo, RoomStatus>().toMutableMap()
         private val idList = emptyMap<String, Int>().toMutableMap()
 
         public fun joinPlayer(uid: UUID, room: RoomInfo): Boolean {
-            if(roomStatus[room]!!.players.size >= gameList[room.gid].maxPlayerCount) {
+            if(roomStatus[room]!!.players.size >= gameList[room]!!.maxPlayerCount) {
                 SimpleGameApi.getPlayer(uid).sendMessage("이미 최대 인원입니다.")
                 return false
             }
@@ -31,25 +34,23 @@ class GameManager {
             }
             playerStatus[uid] = room
             roomStatus[room]!!.players.add(uid)
-            if(roomStatus[room]!!.players.size == gameList[room.gid].playerCount && roomStatus[room]!!.status == Status.Waiting) {
-                //CoroutineScope(Dispatchers.Default).launch {
-                Thread {
+            if(roomStatus[room]!!.players.size == gameList[room]!!.playerCount && roomStatus[room]!!.status == Status.Waiting) {
+                Coroutine.startCoroutine(sequence {
                     roomStatus[room]!!.status = Status.Pending
                     for(t in 0 until 10) {
                         roomStatus[room]!!.players.forEach{SimpleGameApi.getPlayer(it).sendMessage("${10 - t}초 후 시작합니다!")}
-                        //delay(1000)
-                        Thread.sleep(1000)
-                        if(roomStatus[room]!!.players.size < gameList[room.gid].playerCount) {
+                        yield(WaitSeconds(1.0))
+                        if(roomStatus[room]!!.players.size < gameList[room]!!.playerCount) {
                             roomStatus[room]!!.status = Status.Waiting
-                            return@Thread
+                            return@sequence
                         }
                     }
                     roomStatus[room]!!.status = Status.Playing
                     CoroutineUtil.invokeMain {
                         Bukkit.getPluginManager().callEvent(GameStartEvent(room))
-                        gameList[room.gid].onGameStart(room, roomStatus[room]!!.players)
+                        gameList[room]!!.onGameStart(room, roomStatus[room]!!.players)
                     }
-                }.start()
+                })
             }
             return true
         }
@@ -66,7 +67,7 @@ class GameManager {
             if(room == null) {
                 return false
             }
-            else getGameById(room.gid).playerFailed(room, uid)
+            else getGame(room)!!.playerFailed(room, uid)
             return true
         }
 
@@ -86,23 +87,19 @@ class GameManager {
         public fun getGameId(name: String): Int? = idList[name]
         public fun getGameId(game: Game): Int? = idList[game.name]
 
-        /*
-        public fun registerGame(game: Game) {
-            if(gameList.containsKey(game.id))
-                throw IllegalArgumentException("Game id ${game.id} already exists")
-            gameList[game.id] = game
-        }
-         */
-
         public fun registerGame(game: Game, roomSize: Int) {
+
             if(idList.containsKey(game.name))
                 throw IllegalArgumentException("Game ${game.name} already exists")
-            idList[game.name] = gameList.size
-            gameList.add(game)
-            for(i in 0 until roomSize)
+            idList[game.name] = idList.size
+            println("Game ${game.name} registered to id: ${idList[game.name]} with $roomSize rooms")
+            //gameList.add(game)
+            for(i in 0 until roomSize) {
+                gameList[RoomInfo(idList[game.name]!!, i)] = game
                 roomStatus[RoomInfo(idList[game.name]!!, i)] = RoomStatus(emptyList<UUID>().toMutableList(), Status.Waiting)
+            }
         }
 
-        public fun getGameById(game: Int): Game = gameList[game]
+        public fun getGame(game: RoomInfo): Game? = gameList[game]
     }
 }
