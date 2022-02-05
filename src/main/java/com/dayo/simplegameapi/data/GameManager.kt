@@ -1,12 +1,12 @@
-package me.ddayo.simplegameapi.data
+package com.dayo.simplegameapi.data
 
 import com.dayo.coroutine.Coroutine
 import com.dayo.coroutine.functions.WaitSeconds
-import me.ddayo.simplegameapi.SimpleGameApi
-import me.ddayo.simplegameapi.api.Game
-import me.ddayo.simplegameapi.event.GameStartEvent
-import me.ddayo.simplegameapi.event.PlayerFailEvent
-import me.ddayo.simplegameapi.util.CoroutineUtil
+import com.dayo.simplegameapi.SimpleGameApi
+import com.dayo.simplegameapi.api.Game
+import com.dayo.simplegameapi.event.GameStartEvent
+import com.dayo.simplegameapi.event.PlayerFailEvent
+import com.dayo.simplegameapi.util.CoroutineUtil
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.lang.Runnable
@@ -38,7 +38,7 @@ class GameManager {
                 Coroutine.startCoroutine(sequence {
                     roomStatus[room]!!.status = Status.Pending
                     for(t in 0 until 10) {
-                        roomStatus[room]!!.players.forEach{ SimpleGameApi.getPlayer(it).sendMessage("${10 - t}초 후 시작합니다!")}
+                        roomStatus[room]!!.players.forEach{SimpleGameApi.getPlayer(it).sendMessage("${10 - t}초 후 시작합니다!")}
                         yield(WaitSeconds(1.0))
                         if(roomStatus[room]!!.players.size < gameList[room]!!.playerCount) {
                             roomStatus[room]!!.status = Status.Waiting

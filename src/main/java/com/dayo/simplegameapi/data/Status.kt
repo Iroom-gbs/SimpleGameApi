@@ -1,4 +1,4 @@
-package me.ddayo.simplegameapi.data
+package com.dayo.simplegameapi.data
 
 enum class Status {
     Waiting,
