@@ -1,7 +1,7 @@
 package me.ddayo.simplegameapi.data
 
-import com.dayo.coroutine.Coroutine
-import com.dayo.coroutine.functions.WaitSeconds
+import me.ddayo.coroutine.Coroutine
+import me.ddayo.coroutine.functions.WaitSeconds
 import me.ddayo.simplegameapi.SimpleGameApi
 import me.ddayo.simplegameapi.api.Game
 import me.ddayo.simplegameapi.event.GameStartEvent

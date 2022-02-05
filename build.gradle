@@ -24,7 +24,7 @@ repositories {
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation files("libs/c.jar")
+    implementation "me.ddayo:coroutine:1.0.1"
 }
 
 def targetJavaVersion = 8
@@ -72,6 +72,14 @@ publishing {
             artifactId = 'simplegameapi'
             version = '1.0.0'
             from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
             pom {
                 name = "Simple game api"
                 description = 'Simple mini game api for minecraft spigot plugin (1.16+)'
@@ -103,8 +111,8 @@ publishing {
     repositories {
         maven {
             credentials {
-                username = System.properties['username']
-                password = System.properties['password']
+                username = project.username
+                password = project.password
             }
             url = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2'
         }
