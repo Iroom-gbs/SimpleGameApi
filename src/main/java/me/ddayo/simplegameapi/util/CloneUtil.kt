@@ -15,6 +15,7 @@ class CloneUtil {
             return l
         }
 
-        fun <T> createInstance(clazz: Class<T>, vararg args: Any) = clazz.getConstructor(*args.map{it::class.java}.toTypedArray()).newInstance(*args)
+        fun <T> createInstance(clazz: Class<T>, vararg args: Any) = try { clazz.getConstructor(*args.map{it::class.java}.toTypedArray()).newInstance(*args) }
+        catch(e: NoSuchMethodException) { clazz.getConstructor(*args.map{ it::class.javaPrimitiveType }.toTypedArray()).newInstance(*args) }
     }
 }
