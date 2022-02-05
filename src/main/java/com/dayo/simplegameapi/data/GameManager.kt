@@ -5,7 +5,6 @@ import com.dayo.simplegameapi.api.Game
 import com.dayo.simplegameapi.event.GameStartEvent
 import com.dayo.simplegameapi.event.PlayerFailEvent
 import com.dayo.simplegameapi.util.CoroutineUtil
-import kotlinx.coroutines.*
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.lang.Runnable
@@ -33,14 +32,16 @@ class GameManager {
             playerStatus[uid] = room
             roomStatus[room]!!.players.add(uid)
             if(roomStatus[room]!!.players.size == gameList[room.gid].playerCount && roomStatus[room]!!.status == Status.Waiting) {
-                CoroutineScope(Dispatchers.Default).launch {
+                //CoroutineScope(Dispatchers.Default).launch {
+                Thread {
                     roomStatus[room]!!.status = Status.Pending
                     for(t in 0 until 10) {
                         roomStatus[room]!!.players.forEach{SimpleGameApi.getPlayer(it).sendMessage("${10 - t}초 후 시작합니다!")}
-                        delay(1000)
+                        //delay(1000)
+                        Thread.sleep(1000)
                         if(roomStatus[room]!!.players.size < gameList[room.gid].playerCount) {
                             roomStatus[room]!!.status = Status.Waiting
-                            return@launch
+                            return@Thread
                         }
                     }
                     roomStatus[room]!!.status = Status.Playing
@@ -48,7 +49,7 @@ class GameManager {
                         Bukkit.getPluginManager().callEvent(GameStartEvent(room))
                         gameList[room.gid].onGameStart(room, roomStatus[room]!!.players)
                     }
-                }
+                }.start()
             }
             return true
         }

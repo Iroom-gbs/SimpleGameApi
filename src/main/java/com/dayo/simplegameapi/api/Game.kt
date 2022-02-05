@@ -24,8 +24,8 @@ abstract class Game {
     }
 
     open fun finish(room: RoomInfo) {
+        GameManager.resetRoom(room)
         CoroutineUtil.invokeMain {
-            GameManager.resetRoom(room)
             Bukkit.getPluginManager().callEvent(GameFinishEvent(room))
         }
     }
