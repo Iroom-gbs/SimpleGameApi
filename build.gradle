@@ -1,9 +1,12 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.6.10'
+    id 'maven-publish'
+    id 'signing'
 }
 
 group = 'me.ddayo'
+archivesBaseName = 'SimpleGameApi'
 version = '1.0.0'
 
 repositories {
@@ -32,6 +35,9 @@ java {
     if (JavaVersion.current() < javaVersion) {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     }
+
+    withJavadocJar()
+    withSourcesJar()
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -57,4 +63,54 @@ compileTestKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'me.ddayo'
+            artifactId = 'simplegameapi'
+            version = '1.0.0'
+            from components.java
+            pom {
+                name = "Simple game api"
+                description = 'Simple mini game api for minecraft spigot plugin (1.16+)'
+                url = 'https://github.com/iroom-gbs/simplegameapi'
+
+                scm {
+                    url = 'https://github.com/Iroom-gbs/SimpleGameApi.git'
+                    connection = 'https://github.com/Iroom-gbs/SimpleGameApi.git'
+                    developerConnection = 'https://github.com/Iroom-gbs/SimpleGameApi.git'
+                }
+
+                licenses {
+                    license {
+                        name = 'The MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'dayo05'
+                        name = 'Jimin Kim'
+                        email = 'dayo05@daum.net'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            credentials {
+                username = System.properties['username']
+                password = System.properties['password']
+            }
+            url = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2'
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.maven
 }
