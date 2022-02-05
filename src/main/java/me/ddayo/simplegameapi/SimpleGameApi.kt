@@ -1,4 +1,4 @@
-package com.dayo.simplegameapi
+package me.ddayo.simplegameapi
 
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin

@@ -1,6 +1,6 @@
-package com.dayo.simplegameapi.util
+package me.ddayo.simplegameapi.util
 
-import com.dayo.simplegameapi.SimpleGameApi
+import me.ddayo.simplegameapi.SimpleGameApi
 import org.bukkit.Bukkit
 
 class CoroutineUtil {
