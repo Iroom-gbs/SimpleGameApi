@@ -47,7 +47,7 @@ class GameManager {
                     roomStatus[room]!!.status = Status.Playing
                     CoroutineUtil.invokeMain {
                         Bukkit.getPluginManager().callEvent(GameStartEvent(room))
-                        gameList[room]!!.onGameStart(room, roomStatus[room]!!.players)
+                        gameList[room]!!.onGameStart(roomStatus[room]!!.players)
                     }
                 })
             }
@@ -66,7 +66,7 @@ class GameManager {
             if(room == null) {
                 return false
             }
-            else getGame(room)!!.playerFailed(room, uid)
+            else getGame(room)!!.playerFailed(uid)
             return true
         }
 
@@ -87,14 +87,19 @@ class GameManager {
         public fun getGameId(game: Game): Int? = idList[game.name]
 
         public fun<T: Game> registerGame(game: Class<T>, vararg args: Any, roomSize: Int) {
-            if(idList.containsKey(game.name))
-                throw IllegalArgumentException("Game ${game.name} already exists")
-            idList[game.name] = idList.size
-            println("Game ${game.name} registered to id: ${idList[game.name]} with $roomSize rooms")
+            val currentId = idList.size
+            val instance = CloneUtil.createInstance(game, RoomInfo(currentId, 0), *args)
+            if(idList.containsKey(instance.name))
+                throw IllegalArgumentException("Game ${instance.name} already exists")
+            idList[instance.name] = currentId
+            println("Game ${instance.name} registered to id: $currentId with $roomSize rooms")
 
-            for(i in 0 until roomSize) {
-                gameList[RoomInfo(idList[game.name]!!, i)] = CloneUtil.createInstance(game, *args)
-                roomStatus[RoomInfo(idList[game.name]!!, i)] = RoomStatus(emptyList<UUID>().toMutableList(), Status.Waiting)
+            gameList[RoomInfo(currentId, 0)] = instance
+            roomStatus[RoomInfo(currentId, 0)] = RoomStatus(emptyList<UUID>().toMutableList(), Status.Waiting)
+
+            for(i in 1 until roomSize) {
+                gameList[RoomInfo(currentId, i)] = CloneUtil.createInstance(game, RoomInfo(currentId, i), *args)
+                roomStatus[RoomInfo(currentId, i)] = RoomStatus(emptyList<UUID>().toMutableList(), Status.Waiting)
             }
         }
 
