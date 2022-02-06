@@ -99,5 +99,7 @@ class GameManager {
         }
 
         public fun getGame(game: RoomInfo): Game? = gameList[game]
+        public fun getRegisteredGameCount() = idList.size
+        public fun getRegisteredGameNameList() = idList.map{it.key}.toList()
     }
 }
