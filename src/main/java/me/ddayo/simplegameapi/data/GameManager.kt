@@ -86,18 +86,6 @@ class GameManager {
         public fun getGameId(name: String): Int? = idList[name]
         public fun getGameId(game: Game): Int? = idList[game.name]
 
-        public fun registerGame(game: Game, roomSize: Int) {
-            if(idList.containsKey(game.name))
-                throw IllegalArgumentException("Game ${game.name} already exists")
-            idList[game.name] = idList.size
-            println("Game ${game.name} registered to id: ${idList[game.name]} with $roomSize rooms")
-            val cloned = CloneUtil.cloneMany(game, roomSize)
-            for(i in 0 until roomSize) {
-                gameList[RoomInfo(idList[game.name]!!, i)] = cloned[i]
-                roomStatus[RoomInfo(idList[game.name]!!, i)] = RoomStatus(emptyList<UUID>().toMutableList(), Status.Waiting)
-            }
-        }
-
         public fun<T: Game> registerGame(game: Class<T>, vararg args: Any, roomSize: Int) {
             if(idList.containsKey(game.name))
                 throw IllegalArgumentException("Game ${game.name} already exists")
