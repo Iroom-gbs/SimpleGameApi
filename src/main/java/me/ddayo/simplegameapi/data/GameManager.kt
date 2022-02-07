@@ -70,8 +70,7 @@ class GameManager {
             return true
         }
 
-        public fun resetRoom(room: RoomInfo) {
-            while(roomStatus[room]!!.players.size > 0) leftPlayer(roomStatus[room]!!.players[roomStatus[room]!!.players.size - 1])
+        public fun finalizeRoom(room: RoomInfo) {
             roomStatus[room]!!.status = Status.Waiting
         }
 
@@ -88,7 +87,8 @@ class GameManager {
 
         public fun<T: Game> registerGame(game: Class<T>, vararg args: Any, roomSize: Int) {
             val currentId = idList.size
-            val instance = CloneUtil.createInstance(game, RoomInfo(currentId, 0), *args)
+            val instance = CloneUtil.createInstance(game, *args)
+            instance.setRoom(RoomInfo(currentId, 0))
             if(idList.containsKey(instance.name))
                 throw IllegalArgumentException("Game ${instance.name} already exists")
             idList[instance.name] = currentId
@@ -98,7 +98,8 @@ class GameManager {
             roomStatus[RoomInfo(currentId, 0)] = RoomStatus(emptyList<UUID>().toMutableList(), Status.Waiting)
 
             for(i in 1 until roomSize) {
-                gameList[RoomInfo(currentId, i)] = CloneUtil.createInstance(game, RoomInfo(currentId, i), *args)
+                gameList[RoomInfo(currentId, i)] = CloneUtil.createInstance(game, *args)
+                gameList[RoomInfo(currentId, i)]!!.setRoom(RoomInfo(currentId, i))
                 roomStatus[RoomInfo(currentId, i)] = RoomStatus(emptyList<UUID>().toMutableList(), Status.Waiting)
             }
         }
@@ -106,5 +107,6 @@ class GameManager {
         public fun getGame(game: RoomInfo): Game? = gameList[game]
         public fun getRegisteredGameCount() = idList.size
         public fun getRegisteredGameNameList() = idList.map{it.key}.toList()
+        public fun getPlayersInRoom(room: RoomInfo) = roomStatus[room]?.players
     }
 }

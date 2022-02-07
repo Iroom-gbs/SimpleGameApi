@@ -8,11 +8,16 @@ import me.ddayo.simplegameapi.util.CoroutineUtil
 import org.bukkit.Bukkit
 import java.util.*
 
-abstract class Game(protected val room: RoomInfo) {
+abstract class Game {
     abstract fun onGameStart(players: List<UUID>)
     abstract val name: String
     abstract val playerCount: Int
     abstract val maxPlayerCount: Int
+    protected lateinit var room: RoomInfo private set
+
+    internal fun setRoom(room: RoomInfo) {
+        this.room = room
+    }
 
     open fun playerFailed(player: UUID) {
         GameManager.leftPlayer(player)
@@ -24,7 +29,14 @@ abstract class Game(protected val room: RoomInfo) {
     }
 
     open fun finish() {
-        GameManager.resetRoom(room)
+        val cp = GameManager.getPlayersInRoom(room)!!.toList()
+        for(player in cp) {
+            CoroutineUtil.invokeMain {
+                Bukkit.getPluginManager().callEvent(PlayerFailEvent(player, room))
+            }
+            GameManager.leftPlayer(player)
+        }
+        GameManager.finalizeRoom(room)
         CoroutineUtil.invokeMain {
             Bukkit.getPluginManager().callEvent(GameFinishEvent(room))
         }
